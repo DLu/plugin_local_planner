@@ -1,9 +1,9 @@
 
-#include <additional_dwa_plugins/closest_target_point_map.h>
+#include <additional_plp_extra_plugins/closest_target_point_map.h>
 #include <costmap_2d/cost_values.h>
 using namespace std;
 
-namespace dwa_plugins {
+namespace plp_extra_plugins {
 
   ClosestTargetPointMap::ClosestTargetPointMap()
     : size_x_(0), size_y_(0)

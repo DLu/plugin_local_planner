@@ -35,65 +35,63 @@
  * Author: TKruse
  *********************************************************************/
 
-#include <additional_dwa_plugins/goal_orientation_cost_function.h>
+#include <additional_plp_extra_plugins/path_orientation_cost_function.h>
 #include <angles/angles.h>
 using base_local_planner::Trajectory;
 
-namespace dwa_plugins {
+namespace plp_extra_plugins {
 
-void GoalOrientationCostFunction::initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util) {
+void PathOrientationCostFunction::initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util) {
     TrajectoryCostFunction::initialize(name, planner_util);
 
     ros::NodeHandle nh("~/" + name_);
-    nh.param("approach_dist", approach_dist_, 0.5);
-}
-
-bool GoalOrientationCostFunction::prepare(tf::Stamped<tf::Pose> global_pose,
-      tf::Stamped<tf::Pose> global_vel,
-      std::vector<geometry_msgs::Point> footprint_spec) {
-  return true;
+    nh.param("front_offset_angle", front_offset_angle_, 0.0);
+    nh.param("max_trans_angle", max_trans_angle_, M_PI);
+    // TODO: Give the option to turn if the CURRENT angle is less than max_trans_angle
 }
 
 
-double GoalOrientationCostFunction::scoreTrajectory(Trajectory &traj) {
+double PathOrientationCostFunction::scoreTrajectory(Trajectory &traj) {
   if(traj.getPointsSize()==0)
-    return 1.0;
-    
-  double sx, sy, sth, px, py, pth;
-  traj.getPoint(0, sx, sy, sth);
-  traj.getPoint(traj.getPointsSize()-1, px, py, pth);  
-  
-  double dist_to_goal = sqrt( pow(sx-goal_x_,2) + pow(sy-goal_y_,2) );
-  //double angle_to_goal = atan2(goal_y_ - py, goal_x_ - px);
-  if(dist_to_goal < .2 and (fabs(traj.xv_) > 0.0 || fabs(traj.yv_) > 0.0))
-    return -1.0;
+    return 0.0;
 
-  /*
-  if(dist_to_goal < approach_dist_){
-    double weight = (approach_dist_ - dist_to_goal) / approach_dist_;
-    double target = angle_to_goal * (1.0 - weight) + goal_yaw_ * weight;
-    return fabs(angles::shortest_angular_distance(target, pth));  
+  double px, py, pth;
+  traj.getPoint(traj.getPointsSize()-1, px, py, pth);
+
+  unsigned int cell_x, cell_y;
+  //we won't allow trajectories that go off the map... shouldn't happen that often anyways
+  if ( ! costmap_->worldToMap(px, py, cell_x, cell_y)) {
+      //we're off the map
+      ROS_WARN("Off Map %f, %f", px, py);
+      return -4.0;
   }
-  double aim_diff = fabs(angles::shortest_angular_distance(pth, angle_to_goal));
-  return aim_diff;*/
-  if(dist_to_goal>=approach_dist_){
-    return 1.0;
-  }
-  double aim_diff = fabs(angles::shortest_angular_distance(pth, goal_yaw_));
-  return aim_diff / M_PI;
+
+  unsigned int path_index = map_(cell_x, cell_y).index;
+  if(path_index>=yaws_.size())
+   return 0.0;
+  double diff = fabs(angles::shortest_angular_distance(pth+front_offset_angle_, yaws_[path_index]));
+  if(diff > max_trans_angle_ && (traj.xv_ > 0.0 || traj.yv_ > 0.0))
+    return -1.0;
+  else
+    return diff;
 }
 
-void GoalOrientationCostFunction::setGlobalPlan(const std::vector<geometry_msgs::PoseStamped>& orig_global_plan, double goal_x, double goal_y)
+void PathOrientationCostFunction::setGlobalPlan(const std::vector<geometry_msgs::PoseStamped>& orig_global_plan, double goal_x, double goal_y)
 {
-  if(orig_global_plan.size()==0){
-    return;
+  target_poses_ = orig_global_plan;
+  if(target_poses_.size()==0)
+      return;
+  yaws_.clear();
+  
+  for(unsigned int i=0; i<target_poses_.size();i++){
+    double angle = tf::getYaw(target_poses_[i].pose.orientation);
+    yaws_.push_back(angle);
   }
-  geometry_msgs::PoseStamped goal = orig_global_plan[ orig_global_plan.size() - 1];
-  goal_x_ = goal.pose.position.x;
-  goal_y_ = goal.pose.position.y;
-  goal_yaw_ = tf::getYaw(goal.pose.orientation);
+ 
+  map_.reset();  
+  map_.setTargetCells(*costmap_, target_poses_);
 }
 
 } /* namespace dwa_local_planner */
 
-PLUGINLIB_EXPORT_CLASS(dwa_plugins::GoalOrientationCostFunction, dwa_local_planner::TrajectoryCostFunction)
+PLUGINLIB_EXPORT_CLASS(plp_extra_plugins::PathOrientationCostFunction, plugin_local_planner::TrajectoryCostFunction)

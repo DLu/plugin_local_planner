@@ -1,0 +1,32 @@
+<class_libraries>
+  <library path="lib/libadditional_plp_extra_plugins">
+    <class type="plp_extra_plugins::MinimizeYCostFunction"  base_class_type="plugin_local_planner::TrajectoryCostFunction">
+      <description></description>
+    </class>
+    <class type="plp_extra_plugins::MinimizeTurnsCostFunction"
+	   base_class_type="plugin_local_planner::TrajectoryCostFunction">
+      <description></description>
+    </class>
+    <class type="plp_extra_plugins::PathOrientationCostFunction"
+	   base_class_type="plugin_local_planner::TrajectoryCostFunction">
+      <description></description>
+    </class>
+    <class type="plp_extra_plugins::GoalOrientationCostFunction"
+	   base_class_type="plugin_local_planner::TrajectoryCostFunction">
+      <description></description>
+    </class>
+    <class type="plp_extra_plugins::SpeedCostFunction"
+	   base_class_type="plugin_local_planner::TrajectoryCostFunction">
+      <description></description>
+    </class>
+    <class type="plp_extra_plugins::JerkCostFunction"
+	   base_class_type="plugin_local_planner::TrajectoryCostFunction">
+      <description></description>
+    </class>
+    <class type="plp_extra_plugins::TurnFirstCostFunction"
+	   base_class_type="plugin_local_planner::TrajectoryCostFunction">
+      <description></description>
+    </class>
+  </library>
+</class_libraries>
+

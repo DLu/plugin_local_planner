@@ -11,7 +11,7 @@
 #include <costmap_2d/costmap_2d.h>
 #include <geometry_msgs/PoseStamped.h>
 
-namespace dwa_plugins {
+namespace plp_extra_plugins {
   class MapCell {
    public:
     unsigned int cx, cy, index;

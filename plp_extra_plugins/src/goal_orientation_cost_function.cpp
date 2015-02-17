@@ -35,39 +35,65 @@
  * Author: TKruse
  *********************************************************************/
 
-#include <additional_dwa_plugins/speed_cost_function.h>
+#include <additional_plp_extra_plugins/goal_orientation_cost_function.h>
 #include <angles/angles.h>
 using base_local_planner::Trajectory;
 
-namespace dwa_plugins {
+namespace plp_extra_plugins {
 
-void SpeedCostFunction::initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util) {
+void GoalOrientationCostFunction::initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util) {
     TrajectoryCostFunction::initialize(name, planner_util);
 
     ros::NodeHandle nh("~/" + name_);
-    nh.param("target_speed", target_speed_, 0.5);
-    nh.param("command_factor", command_factor_, 1.0);
-    nh.param("x_speed_only", x_speed_only_, true);
+    nh.param("approach_dist", approach_dist_, 0.5);
 }
 
-bool SpeedCostFunction::prepare(tf::Stamped<tf::Pose> global_pose,
+bool GoalOrientationCostFunction::prepare(tf::Stamped<tf::Pose> global_pose,
       tf::Stamped<tf::Pose> global_vel,
       std::vector<geometry_msgs::Point> footprint_spec) {
   return true;
 }
 
 
-double SpeedCostFunction::scoreTrajectory(Trajectory &traj) {
- 
-  double abs_speed;
-  if(x_speed_only_){
-    abs_speed = traj.xv_;
-  } else {
-    abs_speed = sqrt( pow(traj.xv_, 2) + pow(traj.yv_, 2) );
+double GoalOrientationCostFunction::scoreTrajectory(Trajectory &traj) {
+  if(traj.getPointsSize()==0)
+    return 1.0;
+    
+  double sx, sy, sth, px, py, pth;
+  traj.getPoint(0, sx, sy, sth);
+  traj.getPoint(traj.getPointsSize()-1, px, py, pth);  
+  
+  double dist_to_goal = sqrt( pow(sx-goal_x_,2) + pow(sy-goal_y_,2) );
+  //double angle_to_goal = atan2(goal_y_ - py, goal_x_ - px);
+  if(dist_to_goal < .2 and (fabs(traj.xv_) > 0.0 || fabs(traj.yv_) > 0.0))
+    return -1.0;
+
+  /*
+  if(dist_to_goal < approach_dist_){
+    double weight = (approach_dist_ - dist_to_goal) / approach_dist_;
+    double target = angle_to_goal * (1.0 - weight) + goal_yaw_ * weight;
+    return fabs(angles::shortest_angular_distance(target, pth));  
   }
-  return fabs(abs_speed - target_speed_ / command_factor_);
+  double aim_diff = fabs(angles::shortest_angular_distance(pth, angle_to_goal));
+  return aim_diff;*/
+  if(dist_to_goal>=approach_dist_){
+    return 1.0;
+  }
+  double aim_diff = fabs(angles::shortest_angular_distance(pth, goal_yaw_));
+  return aim_diff / M_PI;
 }
 
-} /* namespace dwa_local_planner */
+void GoalOrientationCostFunction::setGlobalPlan(const std::vector<geometry_msgs::PoseStamped>& orig_global_plan, double goal_x, double goal_y)
+{
+  if(orig_global_plan.size()==0){
+    return;
+  }
+  geometry_msgs::PoseStamped goal = orig_global_plan[ orig_global_plan.size() - 1];
+  goal_x_ = goal.pose.position.x;
+  goal_y_ = goal.pose.position.y;
+  goal_yaw_ = tf::getYaw(goal.pose.orientation);
+}
 
-PLUGINLIB_EXPORT_CLASS(dwa_plugins::SpeedCostFunction, dwa_local_planner::TrajectoryCostFunction)
+} /* namespace plp_extra_plugins */
+
+PLUGINLIB_EXPORT_CLASS(plp_extra_plugins::GoalOrientationCostFunction, plugin_local_planner::TrajectoryCostFunction)

@@ -35,36 +35,30 @@
  * Author: TKruse
  *********************************************************************/
 
-#ifndef JERK_COST_FUNCTION_H_
-#define JERK_COST_FUNCTION_H_
+#ifndef SPEED_COST_FUNCTION_H_
+#define SPEED_COST_FUNCTION_H_
 
-#include <dwa_local_planner/trajectory_cost_function.h>
+#include <plugin_local_planner/trajectory_cost_function.h>
 
-namespace dwa_plugins {
+namespace plp_extra_plugins {
 
-class JerkCostFunction: public dwa_local_planner::TrajectoryCostFunction {
+class SpeedCostFunction: public plugin_local_planner::TrajectoryCostFunction {
 public:
 
-  JerkCostFunction() {}
-  
+  SpeedCostFunction() {}
+
   void initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util);
-  
-  virtual void reset() { init_ = false; }
-  
   virtual bool prepare(tf::Stamped<tf::Pose> global_pose,
 		       tf::Stamped<tf::Pose> global_vel,
 		       std::vector<geometry_msgs::Point> footprint_spec);
 
   double scoreTrajectory(base_local_planner::Trajectory &traj);
 
-  virtual void debrief(base_local_planner::Trajectory &result);
-
 protected:
-  double last_x_, last_y_, last_theta_;
-  double xw_, yw_, tw_;
-  bool init_;
-
+  double target_speed_;
+  double command_factor_;
+  bool x_speed_only_;
 };
 
 }
-#endif /* JERK_COST_FUNCTION_H_ */
+#endif /* SPEED_COST_FUNCTION_H_ */

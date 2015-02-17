@@ -1,6 +1,6 @@
-#include <dwa_local_planner/trajectory_cost_function.h>
+#include <plugin_local_planner/trajectory_cost_function.h>
 
-#include <additional_dwa_plugins/closest_target_point_map.h>
+#include <additional_plp_extra_plugins/closest_target_point_map.h>
 #include <angles/angles.h>
 using base_local_planner::Trajectory;
 
@@ -10,9 +10,9 @@ int sign(double f){
 }
 
 
-namespace dwa_plugins {
+namespace plp_extra_plugins {
 
-class TurnFirstCostFunction : public dwa_local_planner::TrajectoryCostFunction {
+class TurnFirstCostFunction : public plugin_local_planner::TrajectoryCostFunction {
 public:
 
   void initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util) {
@@ -142,4 +142,4 @@ public:
 }
 
 
-PLUGINLIB_EXPORT_CLASS(dwa_plugins::TurnFirstCostFunction, dwa_local_planner::TrajectoryCostFunction)
+PLUGINLIB_EXPORT_CLASS(plp_extra_plugins::TurnFirstCostFunction, plugin_local_planner::TrajectoryCostFunction)

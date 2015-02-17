@@ -35,30 +35,46 @@
  * Author: TKruse
  *********************************************************************/
 
-#ifndef SPEED_COST_FUNCTION_H_
-#define SPEED_COST_FUNCTION_H_
+#include <additional_plp_extra_plugins/jerk_cost_function.h>
+#include <angles/angles.h>
+using base_local_planner::Trajectory;
 
-#include <dwa_local_planner/trajectory_cost_function.h>
+namespace plp_extra_plugins {
 
-namespace dwa_plugins {
+void JerkCostFunction::initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util) {
+    TrajectoryCostFunction::initialize(name, planner_util);
 
-class SpeedCostFunction: public dwa_local_planner::TrajectoryCostFunction {
-public:
-
-  SpeedCostFunction() {}
-
-  void initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util);
-  virtual bool prepare(tf::Stamped<tf::Pose> global_pose,
-		       tf::Stamped<tf::Pose> global_vel,
-		       std::vector<geometry_msgs::Point> footprint_spec);
-
-  double scoreTrajectory(base_local_planner::Trajectory &traj);
-
-protected:
-  double target_speed_;
-  double command_factor_;
-  bool x_speed_only_;
-};
-
+    ros::NodeHandle nh("~/" + name_);
+    nh.param("weight_x", xw_, 1.0);
+    nh.param("weight_y", yw_, 1.0);
+    nh.param("weight_theta", tw_, 1.0);
+    init_ = false;
 }
-#endif /* SPEED_COST_FUNCTION_H_ */
+
+bool JerkCostFunction::prepare(tf::Stamped<tf::Pose> global_pose,
+      tf::Stamped<tf::Pose> global_vel,
+      std::vector<geometry_msgs::Point> footprint_spec) {
+  return true;
+}
+
+
+double JerkCostFunction::scoreTrajectory(Trajectory &traj) {
+  if(!init_)
+    return 0.0;
+    
+  return xw_ * fabs(last_x_ - traj.xv_) 
+       + yw_ * fabs(last_y_ - traj.yv_) 
+       + tw_ * fabs(last_theta_ - traj.thetav_);
+}
+
+void JerkCostFunction::debrief(base_local_planner::Trajectory &result)
+{
+    last_x_ = result.xv_;
+    last_y_ = result.yv_;
+    last_theta_ = result.thetav_;
+    init_ = true;
+}
+
+} /* namespace plp_extra_plugins */
+
+PLUGINLIB_EXPORT_CLASS(plp_extra_plugins::JerkCostFunction, plugin_local_planner::TrajectoryCostFunction)

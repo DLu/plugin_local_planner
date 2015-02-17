@@ -1,11 +1,11 @@
-#include <dwa_local_planner/trajectory_cost_function.h>
+#include <plugin_local_planner/trajectory_cost_function.h>
 
 using base_local_planner::Trajectory;
 
 
-namespace dwa_plugins {
+namespace plp_extra_plugins {
 
-class BaseCostFunction : public dwa_local_planner::TrajectoryCostFunction {
+class BaseCostFunction : public plugin_local_planner::TrajectoryCostFunction {
 public:
 
   void initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util) {
@@ -53,4 +53,4 @@ public:
 }
 
 
-PLUGINLIB_EXPORT_CLASS(dwa_plugins::BaseCostFunction, dwa_local_planner::TrajectoryCostFunction)
+PLUGINLIB_EXPORT_CLASS(plp_extra_plugins::BaseCostFunction, plugin_local_planner::TrajectoryCostFunction)

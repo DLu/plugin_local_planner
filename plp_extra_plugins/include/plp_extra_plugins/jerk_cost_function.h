@@ -35,38 +35,36 @@
  * Author: TKruse
  *********************************************************************/
 
-#ifndef PATH_ORIENTATION_COST_FUNCTION_H_
-#define PATH_ORIENTATION_COST_FUNCTION_H_
+#ifndef JERK_COST_FUNCTION_H_
+#define JERK_COST_FUNCTION_H_
 
-#include <dwa_local_planner/trajectory_cost_function.h>
+#include <plugin_local_planner/trajectory_cost_function.h>
 
-#include <costmap_2d/costmap_2d.h>
-#include <additional_dwa_plugins/closest_target_point_map.h>
+namespace plp_extra_plugins {
 
-namespace dwa_plugins {
-
-class PathOrientationCostFunction: public dwa_local_planner::TrajectoryCostFunction {
+class JerkCostFunction: public plugin_local_planner::TrajectoryCostFunction {
 public:
 
-  PathOrientationCostFunction() {}
-
+  JerkCostFunction() {}
+  
   void initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util);
+  
+  virtual void reset() { init_ = false; }
+  
   virtual bool prepare(tf::Stamped<tf::Pose> global_pose,
 		       tf::Stamped<tf::Pose> global_vel,
-		       std::vector<geometry_msgs::Point> footprint_spec) { return true; }
+		       std::vector<geometry_msgs::Point> footprint_spec);
 
   double scoreTrajectory(base_local_planner::Trajectory &traj);
 
-  virtual void setGlobalPlan(const std::vector<geometry_msgs::PoseStamped>& orig_global_plan, double goal_x, double goal_y);
+  virtual void debrief(base_local_planner::Trajectory &result);
 
 protected:
-  std::vector<geometry_msgs::PoseStamped> target_poses_;
-  std::vector<double> yaws_;
-  double max_trans_angle_, front_offset_angle_;
-
-  ClosestTargetPointMap map_;
+  double last_x_, last_y_, last_theta_;
+  double xw_, yw_, tw_;
+  bool init_;
 
 };
 
 }
-#endif /* PATH_ORIENTATION_COST_FUNCTION_H_ */
+#endif /* JERK_COST_FUNCTION_H_ */

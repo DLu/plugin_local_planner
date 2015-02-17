@@ -1,11 +1,11 @@
-#include <dwa_local_planner/trajectory_cost_function.h>
+#include <plugin_local_planner/trajectory_cost_function.h>
 
 using base_local_planner::Trajectory;
 
 
-namespace dwa_plugins {
+namespace plp_extra_plugins {
 
-class MinimizeYCostFunction : public dwa_local_planner::TrajectoryCostFunction {
+class MinimizeTurnsCostFunction : public plugin_local_planner::TrajectoryCostFunction {
 public:
 
   /**
@@ -24,7 +24,7 @@ public:
    */
   virtual double scoreTrajectory(Trajectory &traj)
   {
-     return fabs(traj.yv_);
+     return fabs(traj.thetav_);
   }
 
 };
@@ -33,4 +33,4 @@ public:
 }
 
 
-PLUGINLIB_EXPORT_CLASS(dwa_plugins::MinimizeYCostFunction, dwa_local_planner::TrajectoryCostFunction)
+PLUGINLIB_EXPORT_CLASS(plp_extra_plugins::MinimizeTurnsCostFunction, plugin_local_planner::TrajectoryCostFunction)

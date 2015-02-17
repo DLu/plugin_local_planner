@@ -35,46 +35,33 @@
  * Author: TKruse
  *********************************************************************/
 
-#include <additional_dwa_plugins/jerk_cost_function.h>
-#include <angles/angles.h>
-using base_local_planner::Trajectory;
+#ifndef GOAL_ORIENTATION_COST_FUNCTION_H_
+#define GOAL_ORIENTATION_COST_FUNCTION_H_
 
-namespace dwa_plugins {
+#include <plugin_local_planner/trajectory_cost_function.h>
 
-void JerkCostFunction::initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util) {
-    TrajectoryCostFunction::initialize(name, planner_util);
+namespace plp_extra_plugins {
 
-    ros::NodeHandle nh("~/" + name_);
-    nh.param("weight_x", xw_, 1.0);
-    nh.param("weight_y", yw_, 1.0);
-    nh.param("weight_theta", tw_, 1.0);
-    init_ = false;
+class GoalOrientationCostFunction: public plugin_local_planner::TrajectoryCostFunction {
+public:
+
+  GoalOrientationCostFunction() {}
+
+  void initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util);
+  virtual bool prepare(tf::Stamped<tf::Pose> global_pose,
+		       tf::Stamped<tf::Pose> global_vel,
+		       std::vector<geometry_msgs::Point> footprint_spec);
+
+  double scoreTrajectory(base_local_planner::Trajectory &traj);
+
+  virtual void setGlobalPlan(const std::vector<geometry_msgs::PoseStamped>& orig_global_plan, double goal_x, double goal_y);
+
+protected:
+  double goal_x_, goal_y_;
+  double goal_yaw_;
+  double approach_dist_;
+
+};
+
 }
-
-bool JerkCostFunction::prepare(tf::Stamped<tf::Pose> global_pose,
-      tf::Stamped<tf::Pose> global_vel,
-      std::vector<geometry_msgs::Point> footprint_spec) {
-  return true;
-}
-
-
-double JerkCostFunction::scoreTrajectory(Trajectory &traj) {
-  if(!init_)
-    return 0.0;
-    
-  return xw_ * fabs(last_x_ - traj.xv_) 
-       + yw_ * fabs(last_y_ - traj.yv_) 
-       + tw_ * fabs(last_theta_ - traj.thetav_);
-}
-
-void JerkCostFunction::debrief(base_local_planner::Trajectory &result)
-{
-    last_x_ = result.xv_;
-    last_y_ = result.yv_;
-    last_theta_ = result.thetav_;
-    init_ = true;
-}
-
-} /* namespace dwa_local_planner */
-
-PLUGINLIB_EXPORT_CLASS(dwa_plugins::JerkCostFunction, dwa_local_planner::TrajectoryCostFunction)
+#endif /* GOAL_ORIENTATION_COST_FUNCTION_H_ */
