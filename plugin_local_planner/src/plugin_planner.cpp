@@ -93,7 +93,6 @@ void move_parameter(ros::NodeHandle& nh, std::string old_name,
         sim_period_);
 
     stop_time_buffer_ = config.stop_time_buffer;
-    forward_point_distance_ = config.forward_point_distance;
 
     int vx_samp, vy_samp, vth_samp;
     vx_samp = config.vx_samples;

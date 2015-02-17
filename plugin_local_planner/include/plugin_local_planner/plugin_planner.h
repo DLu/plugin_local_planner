@@ -172,23 +172,14 @@ namespace plugin_local_planner {
       plugin_local_planner::LocalPlannerUtil *planner_util_;
 
       double stop_time_buffer_; ///< @brief How long before hitting something we're going to enforce that the robot stop
-      double pdist_scale_, gdist_scale_, occdist_scale_;
-      double porient_scale_, gorient_scale_;
       Eigen::Vector3f vsamples_;
 
       double sim_period_;///< @brief The number of seconds to use to compute max/min vels for dwa
       plugin_local_planner::Trajectory result_traj_;
 
-      double forward_point_distance_;
-      double scaled_path_factor_;
-
       std::vector<geometry_msgs::PoseStamped> global_plan_;
 
       boost::mutex configuration_mutex_;
-      bool publish_cost_grid_pc_; ///< @brief Whether or not to build and publish a PointCloud
-      bool publish_traj_pc_;
-
-      double cheat_factor_;
 
       // see constructor body for explanations
       plugin_local_planner::SimpleTrajectoryGenerator generator_;
