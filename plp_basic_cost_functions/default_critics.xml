@@ -1,0 +1,22 @@
+<class_libraries>
+  <library path="libcost_functions">
+    <class type="plp_basic_cost_functions::OscillationCostFunction"  base_class_type="plugin_local_planner::TrajectoryCostFunction">
+      <description></description>
+    </class>
+    <class type="plp_basic_cost_functions::ObstacleCostFunction"  base_class_type="plugin_local_planner::TrajectoryCostFunction">
+      <description></description>
+    </class>
+    <class type="plp_basic_cost_functions::PathDistCostFunction"  base_class_type="plugin_local_planner::TrajectoryCostFunction">
+      <description></description>
+    </class>
+    <class type="plp_basic_cost_functions::PathAlignCostFunction"  base_class_type="plugin_local_planner::TrajectoryCostFunction">
+      <description></description>
+    </class>
+    <class type="plp_basic_cost_functions::GoalDistCostFunction"  base_class_type="plugin_local_planner::TrajectoryCostFunction">
+      <description></description>
+    </class>
+    <class type="plp_basic_cost_functions::GoalAlignCostFunction"  base_class_type="plugin_local_planner::TrajectoryCostFunction">
+      <description></description>
+    </class>
+  </library>
+</class_libraries>
