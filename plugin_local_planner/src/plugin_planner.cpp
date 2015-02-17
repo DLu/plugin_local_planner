@@ -193,8 +193,8 @@ void move_parameter(ros::NodeHandle& nh, std::string old_name,
 
           if(type.find("::") == std::string::npos)
           {
-              if(plugin_loader_.isClassAvailable("plugin_local_planner::"+type))
-                  type = "plugin_local_planner::" + type;              
+              if(plugin_loader_.isClassAvailable("plp_basic_cost_functions::"+type))
+                  type = "plp_basic_cost_functions::" + type;              
               else if(plugin_loader_.isClassAvailable("dwa_plugins::"+type))
                   type = "dwa_plugins::"+type;
           }

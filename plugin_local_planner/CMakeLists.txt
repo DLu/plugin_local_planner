@@ -52,17 +52,17 @@ add_library(local_planner_core
 	src/trajectory.cpp
 )
 
-add_library(plugin_planner
+add_library(plugin_local_planner
     src/plugin_planner.cpp
     src/plugin_planner_ros.cpp
 )
 
-target_link_libraries(plugin_planner
+target_link_libraries(plugin_local_planner
   local_planner_core
   ${catkin_LIBRARIES}
 )
 
-add_dependencies(plugin_planner ${PROJECT_NAME}_gencfg)
+add_dependencies(plugin_local_planner ${PROJECT_NAME}_gencfg)
 
 
 add_executable(standalone_planner src/standalone_planner.cpp)
@@ -81,7 +81,7 @@ add_executable(standalone_planner src/standalone_planner.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(standalone_planner
-  plugin_planner 
+  plugin_local_planner 
   ${catkin_LIBRARIES}
 )
 
@@ -100,11 +100,11 @@ target_link_libraries(standalone_planner
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS plugin_local_planner plugin_local_planner_node
+install(TARGETS plugin_local_planner standalone_planner
 #   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/
