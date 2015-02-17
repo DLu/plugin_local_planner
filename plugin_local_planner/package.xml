@@ -29,7 +29,7 @@
   <run_depend>angles</run_depend>
   <run_depend>geometry_msgs</run_depend>
 
-    <export>
-        <nav_core plugin="${prefix}/blp_plugin.xml"/>
-    </export>
+  <export>
+      <nav_core plugin="${prefix}/blp_plugin.xml"/>
+  </export>
 </package>

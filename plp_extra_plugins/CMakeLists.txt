@@ -8,7 +8,6 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package(
   INCLUDE_DIRS include
-  ###DEPENDS system_lib
 )
 
 include_directories(
