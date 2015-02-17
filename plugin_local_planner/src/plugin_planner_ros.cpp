@@ -164,11 +164,6 @@ namespace plugin_local_planner {
     plugin_local_planner::publishPlan(path, l_plan_pub_);
   }
 
-
-  void PluginPlannerROS::publishGlobalPlan(std::vector<geometry_msgs::PoseStamped>& path) {
-    plugin_local_planner::publishPlan(path, g_plan_pub_);
-  }
-
   PluginPlannerROS::~PluginPlannerROS(){
     //make sure to clean things up
     if(dsrv_)
@@ -281,8 +276,6 @@ namespace plugin_local_planner {
     if (automatic_rotate_at_end_ && latchedStopRotateController_.isPositionReached(&planner_util_, global_pose)) {
       //publish an empty plan because we've reached our goal position
       std::vector<geometry_msgs::PoseStamped> local_plan;
-      std::vector<geometry_msgs::PoseStamped> transformed_plan;
-      publishGlobalPlan(transformed_plan);
       publishLocalPlan(local_plan);
       plugin_local_planner::LocalPlannerLimits limits = planner_util_.getCurrentLimits();
       return latchedStopRotateController_.computeVelocityCommandsStopRotate(
@@ -295,12 +288,8 @@ namespace plugin_local_planner {
           boost::bind(&PluginPlanner::checkTrajectory, dp_, _1, _2, _3));
     } else {
       bool isOk = dwaComputeVelocityCommands(global_pose, cmd_vel);
-      if (isOk) {
-        publishGlobalPlan(transformed_plan);
-      } else {
+      if (!isOk) {
         ROS_WARN_NAMED("plugin_local_planner", "DWA planner failed to produce path.");
-        std::vector<geometry_msgs::PoseStamped> empty_plan;
-        publishGlobalPlan(empty_plan);
       }
       return isOk;
     }

@@ -140,8 +140,6 @@ namespace plugin_local_planner {
 
       void publishLocalPlan(std::vector<geometry_msgs::PoseStamped>& path);
 
-      void publishGlobalPlan(std::vector<geometry_msgs::PoseStamped>& path);
-
       tf::TransformListener* tf_; ///< @brief Used for transforming point clouds
 
       // for visualisation, publishers of global and local plan
