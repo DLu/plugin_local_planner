@@ -142,8 +142,8 @@ namespace plugin_local_planner {
 
       tf::TransformListener* tf_; ///< @brief Used for transforming point clouds
 
-      // for visualisation, publishers of global and local plan
-      ros::Publisher g_plan_pub_, l_plan_pub_;
+      // for visualisation, publisher of local plan
+      ros::Publisher l_plan_pub_;
 
       plugin_local_planner::LocalPlannerUtil planner_util_;
 
