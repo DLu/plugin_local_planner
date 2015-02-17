@@ -35,7 +35,6 @@
 * Author: Eitan Marder-Eppstein
 *********************************************************************/
 #include <plugin_local_planner/plugin_planner.h>
-#include <plugin_local_planner/map_grid_cost_point.h>
 #include <cmath>
 
 //for computing path distance
@@ -45,7 +44,6 @@
 
 #include <ros/ros.h>
 
-#include <pcl_conversions/pcl_conversions.h>
 class XmlArray :public XmlRpc::XmlRpcValue
 {
 public:
@@ -152,16 +150,8 @@ void move_parameter(ros::NodeHandle& nh, std::string old_name,
 
     reset();
 
-    private_nh.param("publish_cost_grid_pc", publish_cost_grid_pc_, false);
-    map_viz_.initialize(name, planner_util->getGlobalFrame(), boost::bind(&PluginPlanner::getCellCosts, this, _1, _2, _3, _4, _5, _6));
-
     std::string frame_id;
     private_nh.param("global_frame_id", frame_id, std::string("odom"));
-
-    traj_cloud_ = new pcl::PointCloud<plugin_local_planner::MapGridCostPoint>;
-    traj_cloud_->header.frame_id = frame_id;
-    traj_cloud_pub_.advertise(private_nh, "trajectory_cloud", 1);
-    private_nh.param("publish_traj_pc", publish_traj_pc_, false);
 
     if (!private_nh.hasParam("critics"))
     {
@@ -366,41 +356,6 @@ void move_parameter(ros::NodeHandle& nh, std::string old_name,
 
 	prepare(global_pose, global_vel, footprint_spec);
     scored_sampling_planner_.findBestTrajectory(result_traj_, &all_explored);
-
-    if(publish_traj_pc_)
-    {
-        plugin_local_planner::MapGridCostPoint pt;
-        traj_cloud_->points.clear();
-        traj_cloud_->width = 0;
-        traj_cloud_->height = 0;
-        std_msgs::Header header;
-        pcl_conversions::fromPCL(traj_cloud_->header, header);
-        header.stamp = ros::Time::now();
-        traj_cloud_->header = pcl_conversions::toPCL(header);
-        for(std::vector<plugin_local_planner::Trajectory>::iterator t=all_explored.begin(); t != all_explored.end(); ++t)
-        {
-            if(t->cost_<0)
-                continue;
-            // Fill out the plan
-            for(unsigned int i = 0; i < t->getPointsSize(); ++i) {
-                double p_x, p_y, p_th;
-                t->getPoint(i, p_x, p_y, p_th);
-                pt.x=p_x;
-                pt.y=p_y;
-                pt.z=0;
-                pt.path_cost=p_th;
-                pt.total_cost=t->cost_;
-                traj_cloud_->push_back(pt);
-            }
-        }
-        traj_cloud_pub_.publish(*traj_cloud_);
-    }
-
-    // verbose publishing of point clouds
-    if (publish_cost_grid_pc_) {
-      //we'll publish the visualization of the costs to rviz before returning our best trajectory
-      map_viz_.publishCostCloud(planner_util_->getCostmap());
-    }
 
     // debrief stateful scoring functions
     COST_ITERATOR(critic, critics_){
