@@ -32,9 +32,9 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-#include <plugin_local_planner/map_cell.h>
+#include <plp_basic_cost_functions/map_cell.h>
 
-namespace plugin_local_planner{
+namespace plp_basic_cost_functions{
 
   MapCell::MapCell()
     : cx(0), cy(0),

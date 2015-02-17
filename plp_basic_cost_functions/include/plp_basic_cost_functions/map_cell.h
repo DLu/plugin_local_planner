@@ -36,7 +36,7 @@
 
 #include <plugin_local_planner/trajectory_inc.h>
 
-namespace plugin_local_planner {
+namespace plp_basic_cost_functions {
   /**
    * @class MapCell
    * @brief Stores path distance and goal distance information used for scoring trajectories

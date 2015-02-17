@@ -31,11 +31,11 @@
  *  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
-#include <plugin_local_planner/map_grid.h>
+#include <plp_basic_cost_functions/map_grid.h>
 #include <costmap_2d/cost_values.h>
 using namespace std;
 
-namespace plugin_local_planner{
+namespace plp_basic_cost_functions{
 
   MapGrid::MapGrid()
     : size_x_(0), size_y_(0)

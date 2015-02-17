@@ -42,8 +42,6 @@ add_library(local_planner_core
 	src/goal_functions.cpp
 	src/latched_stop_rotate_controller.cpp
 	src/local_planner_util.cpp
-	src/map_cell.cpp
-	src/map_grid.cpp
 	src/odometry_helper_ros.cpp
 	src/scale_manager.cpp
 	src/simple_scored_sampling_planner.cpp

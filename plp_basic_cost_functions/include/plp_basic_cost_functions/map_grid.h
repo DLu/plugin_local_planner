@@ -40,11 +40,11 @@
 #include <ros/console.h>
 #include <ros/ros.h>
 
-#include <plugin_local_planner/map_cell.h>
+#include <plp_basic_cost_functions/map_cell.h>
 #include <costmap_2d/costmap_2d.h>
 #include <geometry_msgs/PoseStamped.h>
 
-namespace plugin_local_planner{
+namespace plp_basic_cost_functions{
   /**
    * @class MapGrid
    * @brief A grid of MapCell cells that is used to propagate path and goal distances for the trajectory controller.

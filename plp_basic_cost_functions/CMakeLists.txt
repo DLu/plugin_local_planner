@@ -97,6 +97,8 @@ include_directories(
 )
 
 add_library(cost_functions 
+	src/map_cell.cpp
+	src/map_grid.cpp
     src/map_grid_cost_function.cpp
     src/goal_dist_cost_function.cpp
     src/path_dist_cost_function.cpp

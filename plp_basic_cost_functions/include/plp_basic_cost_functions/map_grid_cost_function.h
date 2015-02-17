@@ -41,7 +41,7 @@
 #include <plugin_local_planner/trajectory_cost_function.h>
 
 #include <costmap_2d/costmap_2d.h>
-#include <plugin_local_planner/map_grid.h>
+#include <plp_basic_cost_functions/map_grid.h>
 
 namespace plp_basic_cost_functions {
 
@@ -98,7 +98,7 @@ protected:
   double goal_x_, goal_y_;
   bool stop_on_failure_;
 
-  plugin_local_planner::MapGrid map_;
+  plp_basic_cost_functions::MapGrid map_;
   CostAggregationType aggregationType_;
 
 };
