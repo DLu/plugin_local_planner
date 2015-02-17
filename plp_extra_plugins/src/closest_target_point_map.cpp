@@ -1,5 +1,5 @@
 
-#include <additional_plp_extra_plugins/closest_target_point_map.h>
+#include <plp_extra_plugins/closest_target_point_map.h>
 #include <costmap_2d/cost_values.h>
 using namespace std;
 

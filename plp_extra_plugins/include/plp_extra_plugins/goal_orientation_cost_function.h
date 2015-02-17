@@ -47,12 +47,12 @@ public:
 
   GoalOrientationCostFunction() {}
 
-  void initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util);
+  void initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util);
   virtual bool prepare(tf::Stamped<tf::Pose> global_pose,
 		       tf::Stamped<tf::Pose> global_vel,
 		       std::vector<geometry_msgs::Point> footprint_spec);
 
-  double scoreTrajectory(base_local_planner::Trajectory &traj);
+  double scoreTrajectory(plugin_local_planner::Trajectory &traj);
 
   virtual void setGlobalPlan(const std::vector<geometry_msgs::PoseStamped>& orig_global_plan, double goal_x, double goal_y);
 

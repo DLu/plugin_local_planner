@@ -7,7 +7,7 @@
 #include <ros/console.h>
 #include <ros/ros.h>
 
-#include <base_local_planner/map_cell.h>
+#include <plp_basic_cost_functions/map_cell.h>
 #include <costmap_2d/costmap_2d.h>
 #include <geometry_msgs/PoseStamped.h>
 

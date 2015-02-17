@@ -1,8 +1,8 @@
 #include <plugin_local_planner/trajectory_cost_function.h>
 
-#include <additional_plp_extra_plugins/closest_target_point_map.h>
+#include <plp_extra_plugins/closest_target_point_map.h>
 #include <angles/angles.h>
-using base_local_planner::Trajectory;
+using plugin_local_planner::Trajectory;
 
 int sign(double f){
     if(f>=0) return 1.0;
@@ -15,7 +15,7 @@ namespace plp_extra_plugins {
 class TurnFirstCostFunction : public plugin_local_planner::TrajectoryCostFunction {
 public:
 
-  void initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util) {
+  void initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util) {
     TrajectoryCostFunction::initialize(name, planner_util);
     
     ros::NodeHandle nh("~/" + name_);
@@ -125,7 +125,7 @@ public:
       return true;
   }
 
-  virtual void debrief(base_local_planner::Trajectory &result) {}
+  virtual void debrief(plugin_local_planner::Trajectory &result) {}
 
   /* Only returns a value for grid based functions */
   virtual float getCost(unsigned int cx, unsigned int cy){ return 0.0; }

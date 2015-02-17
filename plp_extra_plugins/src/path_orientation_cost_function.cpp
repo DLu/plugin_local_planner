@@ -35,13 +35,13 @@
  * Author: TKruse
  *********************************************************************/
 
-#include <additional_plp_extra_plugins/path_orientation_cost_function.h>
+#include <plp_extra_plugins/path_orientation_cost_function.h>
 #include <angles/angles.h>
-using base_local_planner::Trajectory;
+using plugin_local_planner::Trajectory;
 
 namespace plp_extra_plugins {
 
-void PathOrientationCostFunction::initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util) {
+void PathOrientationCostFunction::initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util) {
     TrajectoryCostFunction::initialize(name, planner_util);
 
     ros::NodeHandle nh("~/" + name_);
@@ -92,6 +92,6 @@ void PathOrientationCostFunction::setGlobalPlan(const std::vector<geometry_msgs:
   map_.setTargetCells(*costmap_, target_poses_);
 }
 
-} /* namespace dwa_local_planner */
+} /* namespace plp_extra_plugins */
 
 PLUGINLIB_EXPORT_CLASS(plp_extra_plugins::PathOrientationCostFunction, plugin_local_planner::TrajectoryCostFunction)

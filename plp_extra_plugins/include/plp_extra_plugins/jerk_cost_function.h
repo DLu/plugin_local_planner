@@ -47,7 +47,7 @@ public:
 
   JerkCostFunction() {}
   
-  void initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util);
+  void initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util);
   
   virtual void reset() { init_ = false; }
   
@@ -55,9 +55,9 @@ public:
 		       tf::Stamped<tf::Pose> global_vel,
 		       std::vector<geometry_msgs::Point> footprint_spec);
 
-  double scoreTrajectory(base_local_planner::Trajectory &traj);
+  double scoreTrajectory(plugin_local_planner::Trajectory &traj);
 
-  virtual void debrief(base_local_planner::Trajectory &result);
+  virtual void debrief(plugin_local_planner::Trajectory &result);
 
 protected:
   double last_x_, last_y_, last_theta_;

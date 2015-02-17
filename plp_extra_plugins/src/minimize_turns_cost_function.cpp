@@ -1,6 +1,6 @@
 #include <plugin_local_planner/trajectory_cost_function.h>
 
-using base_local_planner::Trajectory;
+using plugin_local_planner::Trajectory;
 
 
 namespace plp_extra_plugins {

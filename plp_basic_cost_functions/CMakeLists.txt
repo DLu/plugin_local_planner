@@ -96,7 +96,7 @@ include_directories(
   include
 )
 
-add_library(cost_functions 
+add_library(${PROJECT_NAME} 
 	src/map_cell.cpp
 	src/map_grid.cpp
     src/map_grid_cost_function.cpp
@@ -110,7 +110,7 @@ add_library(cost_functions
     src/prefer_forward_cost_function.cpp
     src/costmap_model.cpp
 ) 
-target_link_libraries(cost_functions plugin_local_planner)
+target_link_libraries(${PROJECT_NAME}  plugin_local_planner)
 
 ## Declare a cpp library
 # add_library(plp_basic_cost_functions
@@ -144,11 +144,11 @@ target_link_libraries(cost_functions plugin_local_planner)
 # )
 
 ## Mark executables and/or libraries for installation
-# install(TARGETS plp_basic_cost_functions plp_basic_cost_functions_node
-#   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
-#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+install(TARGETS ${PROJECT_NAME} 
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
 
 ## Mark cpp header files for installation
 # install(DIRECTORY include/${PROJECT_NAME}/

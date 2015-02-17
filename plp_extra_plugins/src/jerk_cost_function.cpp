@@ -35,13 +35,13 @@
  * Author: TKruse
  *********************************************************************/
 
-#include <additional_plp_extra_plugins/jerk_cost_function.h>
+#include <plp_extra_plugins/jerk_cost_function.h>
 #include <angles/angles.h>
-using base_local_planner::Trajectory;
+using plugin_local_planner::Trajectory;
 
 namespace plp_extra_plugins {
 
-void JerkCostFunction::initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util) {
+void JerkCostFunction::initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util) {
     TrajectoryCostFunction::initialize(name, planner_util);
 
     ros::NodeHandle nh("~/" + name_);
@@ -67,7 +67,7 @@ double JerkCostFunction::scoreTrajectory(Trajectory &traj) {
        + tw_ * fabs(last_theta_ - traj.thetav_);
 }
 
-void JerkCostFunction::debrief(base_local_planner::Trajectory &result)
+void JerkCostFunction::debrief(plugin_local_planner::Trajectory &result)
 {
     last_x_ = result.xv_;
     last_y_ = result.yv_;

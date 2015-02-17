@@ -41,7 +41,7 @@
 #include <plugin_local_planner/trajectory_cost_function.h>
 
 #include <costmap_2d/costmap_2d.h>
-#include <additional_plp_extra_plugins/closest_target_point_map.h>
+#include <plp_extra_plugins/closest_target_point_map.h>
 
 namespace plp_extra_plugins {
 
@@ -50,12 +50,12 @@ public:
 
   PathOrientationCostFunction() {}
 
-  void initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util);
+  void initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util);
   virtual bool prepare(tf::Stamped<tf::Pose> global_pose,
 		       tf::Stamped<tf::Pose> global_vel,
 		       std::vector<geometry_msgs::Point> footprint_spec) { return true; }
 
-  double scoreTrajectory(base_local_planner::Trajectory &traj);
+  double scoreTrajectory(plugin_local_planner::Trajectory &traj);
 
   virtual void setGlobalPlan(const std::vector<geometry_msgs::PoseStamped>& orig_global_plan, double goal_x, double goal_y);
 

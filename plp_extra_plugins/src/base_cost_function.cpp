@@ -1,6 +1,6 @@
 #include <plugin_local_planner/trajectory_cost_function.h>
 
-using base_local_planner::Trajectory;
+using plugin_local_planner::Trajectory;
 
 
 namespace plp_extra_plugins {
@@ -8,7 +8,7 @@ namespace plp_extra_plugins {
 class BaseCostFunction : public plugin_local_planner::TrajectoryCostFunction {
 public:
 
-  void initialize(std::string name, base_local_planner::LocalPlannerUtil *planner_util) {
+  void initialize(std::string name, plugin_local_planner::LocalPlannerUtil *planner_util) {
     TrajectoryCostFunction::initialize(name, planner_util);
   }
 
@@ -42,7 +42,7 @@ public:
      return 0.0;  
   }
 
-  virtual void debrief(base_local_planner::Trajectory &result) {}
+  virtual void debrief(plugin_local_planner::Trajectory &result) {}
 
   /* Only returns a value for grid based functions */
   virtual float getCost(unsigned int cx, unsigned int cy){ return 0.0; }
