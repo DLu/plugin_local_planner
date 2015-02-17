@@ -36,7 +36,6 @@
 
 #include <vector>
 #include <iostream>
-#include <plugin_local_planner/trajectory_inc.h>
 #include <ros/console.h>
 #include <ros/ros.h>
 

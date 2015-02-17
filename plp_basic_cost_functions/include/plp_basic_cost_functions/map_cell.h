@@ -34,7 +34,11 @@
 #ifndef TRAJECTORY_ROLLOUT_MAP_CELL_H_
 #define TRAJECTORY_ROLLOUT_MAP_CELL_H_
 
-#include <plugin_local_planner/trajectory_inc.h>
+#include <limits>
+
+#ifndef DBL_MAX   /* Max decimal value of a double */
+#define DBL_MAX   std::numeric_limits<double>::max()  // 1.7976931348623157e+308
+#endif
 
 namespace plp_basic_cost_functions {
   /**
