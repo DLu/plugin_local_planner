@@ -14,13 +14,17 @@ find_package(catkin REQUIRED COMPONENTS
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
 
+generate_dynamic_reconfigure_options(
+    cfg/PluginPlanner.cfg
+)
 
 catkin_package(
-#  INCLUDE_DIRS include
-#  LIBRARIES plugin_local_planner
-#  CATKIN_DEPENDS costmap_2d dynamic_reconfigure nav_core nav_msgs pluginlib roscpp tf
+  INCLUDE_DIRS include
+  LIBRARIES plugin_local_planner
+  CATKIN_DEPENDS costmap_2d dynamic_reconfigure nav_core nav_msgs pluginlib roscpp tf
 #  DEPENDS system_lib
 )
+
 
 ###########
 ## Build ##
@@ -31,7 +35,37 @@ catkin_package(
 # include_directories(include)
 include_directories(
   ${catkin_INCLUDE_DIRS}
+  include
 )
+
+add_library(local_planner_core
+	src/goal_functions.cpp
+	src/latched_stop_rotate_controller.cpp
+	src/local_planner_util.cpp
+	src/map_cell.cpp
+	src/map_grid.cpp
+	src/map_grid_visualizer.cpp
+	src/odometry_helper_ros.cpp
+	src/scale_manager.cpp
+	src/simple_scored_sampling_planner.cpp
+	src/simple_trajectory_generator.cpp
+	src/trajectory.cpp
+)
+
+add_library(plugin_planner
+    src/plugin_planner.cpp
+    src/plugin_planner_ros.cpp
+)
+
+target_link_libraries(plugin_planner
+  local_planner_core
+  ${catkin_LIBRARIES}
+)
+
+add_dependencies(plugin_planner ${PROJECT_NAME}_gencfg)
+
+
+add_executable(standalone_planner src/standalone_planner.cpp)
 
 ## Declare a cpp library
 # add_library(plugin_local_planner
@@ -46,9 +80,10 @@ include_directories(
 # add_dependencies(plugin_local_planner_node plugin_local_planner_generate_messages_cpp)
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(plugin_local_planner_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(standalone_planner
+  plugin_planner 
+  ${catkin_LIBRARIES}
+)
 
 #############
 ## Install ##
