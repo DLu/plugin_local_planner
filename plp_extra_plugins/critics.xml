@@ -1,5 +1,5 @@
 <class_libraries>
-  <library path="lib/libadditional_plp_extra_plugins">
+  <library path="lib/libplp_extra_plugins">
     <class type="plp_extra_plugins::MinimizeYCostFunction"  base_class_type="plugin_local_planner::TrajectoryCostFunction">
       <description></description>
     </class>
