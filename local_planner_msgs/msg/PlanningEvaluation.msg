@@ -1,0 +1,2 @@
+int best
+PlanCost[] plans
