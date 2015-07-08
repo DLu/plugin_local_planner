@@ -14,7 +14,7 @@ namespace plugin_local_planner {
 class ScaleManager {
 public:
     ScaleManager() { }
-    void initialize(std::vector<CostFunctionPointer >* critics_);
+    void initialize(std::string name, std::vector<CostFunctionPointer >* critics_);
     bool set_params(dynamic_reconfigure::Reconfigure::Request &req,
                     dynamic_reconfigure::Reconfigure::Response &res);
 

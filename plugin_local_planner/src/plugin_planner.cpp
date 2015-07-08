@@ -203,7 +203,7 @@ void move_parameter(ros::NodeHandle& nh, std::string old_name,
           ROS_INFO("     (scale: %f)", plugin->getScale());
         }
     }
-    scale_manager_.initialize(&critics_);
+    scale_manager_.initialize(name, &critics_);
 
     // trajectory generators
     std::vector<plugin_local_planner::TrajectorySampleGenerator*> generator_list;

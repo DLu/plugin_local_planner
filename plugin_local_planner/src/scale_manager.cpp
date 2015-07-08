@@ -37,7 +37,7 @@
 #include <plugin_local_planner/scale_manager.h>
 
 namespace plugin_local_planner {
-void ScaleManager::initialize(std::vector<CostFunctionPointer >* critics)
+void ScaleManager::initialize(std::string name, std::vector<CostFunctionPointer >* critics)
 {
     critics_ = critics;
     int N = critics_->size();
@@ -63,7 +63,7 @@ void ScaleManager::initialize(std::vector<CostFunctionPointer >* critics)
         i++;
     }
 
-    ros::NodeHandle nh("~");
+    ros::NodeHandle nh("~" + name);
     description_pub_ = nh.advertise<dynamic_reconfigure::ConfigDescription>("scale/parameter_descriptions", 1, true);
     set_params_srv_  = nh.advertiseService("scale/set_parameters", &ScaleManager::set_params, this);
 
