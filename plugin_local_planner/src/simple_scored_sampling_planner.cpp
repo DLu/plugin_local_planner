@@ -86,12 +86,13 @@ namespace plugin_local_planner {
     return traj_cost;
   }
 
-  bool SimpleScoredSamplingPlanner::findBestTrajectory(Trajectory& traj, std::vector<Trajectory>* all_explored) {
+  bool SimpleScoredSamplingPlanner::findBestTrajectory(Trajectory& traj, double& worst_traj_cost, std::vector<Trajectory>* all_explored) {
     Trajectory loop_traj;
     Trajectory best_traj;
     double loop_traj_cost, best_traj_cost = -1;
     bool gen_success;
     int count, count_valid;
+    worst_traj_cost = -1;
 
     for (std::vector<TrajectorySampleGenerator*>::iterator loop_gen = gen_list_.begin(); loop_gen != gen_list_.end(); ++loop_gen) {
       count = 0;
@@ -115,6 +116,9 @@ namespace plugin_local_planner {
             best_traj_cost = loop_traj_cost;
             best_traj = loop_traj;
           }
+          if (worst_traj_cost < 0 || loop_traj_cost > worst_traj_cost) {
+              worst_traj_cost = loop_traj_cost;
+          }              
         }
         count++;
         if (max_samples_ > 0 && count >= max_samples_) {

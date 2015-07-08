@@ -55,6 +55,8 @@
 #include <plugin_local_planner/simple_scored_sampling_planner.h>
 #include <plugin_local_planner/scale_manager.h>
 
+#include <visualization_msgs/Marker.h>
+#include <visualization_msgs/MarkerArray.h>
 #include <nav_msgs/Path.h>
 #include <pluginlib/class_loader.h>
 
@@ -180,6 +182,9 @@ namespace plugin_local_planner {
       std::vector<geometry_msgs::PoseStamped> global_plan_;
 
       boost::mutex configuration_mutex_;
+      ros::Publisher marker_pub_;
+      bool publish_traj_pc_;
+      int prev_marker_count_;
 
       // see constructor body for explanations
       plugin_local_planner::SimpleTrajectoryGenerator generator_;

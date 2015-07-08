@@ -152,6 +152,10 @@ void move_parameter(ros::NodeHandle& nh, std::string old_name,
     std::string frame_id;
     private_nh.param("global_frame_id", frame_id, std::string("odom"));
 
+    marker_pub_ = private_nh.advertise<visualization_msgs::MarkerArray>("markers", 1);
+    private_nh.param("publish_traj_pc", publish_traj_pc_, false);
+    prev_marker_count_ = 0;
+
     if (!private_nh.hasParam("critics"))
     {
         resetOldParameters(private_nh);
@@ -353,12 +357,61 @@ void move_parameter(ros::NodeHandle& nh, std::string old_name,
     // find best trajectory by sampling and scoring the samples
     std::vector<plugin_local_planner::Trajectory> all_explored;
 
-	prepare(global_pose, global_vel, footprint_spec);
-    scored_sampling_planner_.findBestTrajectory(result_traj_, &all_explored);
+    prepare(global_pose, global_vel, footprint_spec);
+    double worst_cost;
+    scored_sampling_planner_.findBestTrajectory(result_traj_, worst_cost, &all_explored);
 
     // debrief stateful scoring functions
     COST_ITERATOR(critic, critics_){
         (*critic)->debrief(result_traj_);
+    }
+
+    if(publish_traj_pc_)
+    {
+        visualization_msgs::MarkerArray ma;
+        geometry_msgs::Point pt;
+
+        visualization_msgs::Marker m;
+        m.header.frame_id = planner_util_->getGlobalFrame();
+        m.header.stamp = ros::Time::now();
+        m.type = m.LINE_STRIP;
+        m.pose.orientation.w = 1;
+        m.scale.x = 0.002;
+        m.color.a = 1.0;
+
+        double best_cost = result_traj_.cost_;
+        
+        for(std::vector<Trajectory>::iterator t=all_explored.begin(); t != all_explored.end(); ++t)
+        {
+            if(t->cost_>=0){
+                m.color.r = 1 - (t->cost_-best_cost)/(worst_cost-best_cost);
+                m.color.g = 1 - (t->cost_-best_cost)/(worst_cost-best_cost);
+                m.color.b = 1;
+                m.ns = "ValidTrajectories";
+            }else{
+                m.color.b = 0;
+                m.ns = "InvalidTrajectories";
+            }
+            m.points.clear();
+            for(unsigned int i = 0; i < t->getPointsSize(); ++i){
+                double p_x, p_y, p_th;
+                t->getPoint(i, p_x, p_y, p_th);
+                pt.x=p_x;
+                pt.y=p_y;
+                pt.z=0;
+                m.points.push_back(pt);
+            }
+            ma.markers.push_back(m);
+            m.id += 1;
+        }
+        int temp = m.id;
+        for(int i=m.id;i<prev_marker_count_; i++){
+            m.action = m.DELETE;
+            ma.markers.push_back(m);
+            m.id += 1;
+        }
+        prev_marker_count_ = temp;
+        marker_pub_.publish(ma);
     }
 
     //if we don't have a legal trajectory, we'll just command zero

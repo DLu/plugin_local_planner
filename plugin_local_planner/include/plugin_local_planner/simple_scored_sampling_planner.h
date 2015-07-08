@@ -92,7 +92,7 @@ public:
    * @param traj The container to write the result to
    * @param all_explored pass NULL or a container to collect all trajectories for debugging (has a penalty)
    */
-  bool findBestTrajectory(plugin_local_planner::Trajectory& traj, std::vector<plugin_local_planner::Trajectory>* all_explored = 0);
+  bool findBestTrajectory(plugin_local_planner::Trajectory& traj, double& worst_traj_cost, std::vector<plugin_local_planner::Trajectory>* all_explored = 0);
 
 
 private:
